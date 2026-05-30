@@ -1,0 +1,45 @@
+{
+	"name": "pfaciana/brain-monkey-doubles",
+	"version": "0.1.0",
+	"description": "Extends Brain Monkey with real WordPress hook execution and composable function stub/expect helpers for unit testing plugins and themes.",
+	"keywords": [],
+	"license": "MIT",
+	"type": "library",
+	"homepage": "https://renderdev.com/",
+	"authors": [
+		{
+			"name": "Phil Faciana",
+			"email": "phil@renderdev.com",
+			"homepage": "https://renderdev.com/",
+			"role": "Developer"
+		}
+	],
+	"scripts": {
+		"test": "pest",
+		"test:parallel": "pest --parallel",
+		"test:watch": "pest --watch",
+		"test:coverage": "@php -d xdebug.mode=coverage vendor/bin/pest --coverage",
+		"cda": "composer dumpautoload",
+		"cdao": "composer dumpautoload --optimize"
+	},
+	"autoload": {
+		"psr-4": {
+			"BrainMonkey\\": "src/"
+		},
+		"files": [
+			"src/Functions/functions.php"
+		]
+	},
+	"config": {
+		"allow-plugins": {
+			"pestphp/pest-plugin": true
+		}
+	},
+	"require-dev": {
+		"pestphp/pest": "4.6.3"
+	},
+	"require": {
+		"php": ">=8.1",
+		"brain/monkey": "^2.7"
+	}
+}
