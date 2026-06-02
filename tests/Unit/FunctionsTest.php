@@ -97,6 +97,102 @@ describe( 'Brain Monkey function doubles', function () {
 	] );
 
 	/*
+	 * 1b. when() is an undocumented alias of stub().
+	 *
+	 * It keeps Brain Monkey's helper name available while preserving this
+	 * package's re-callable baseline behavior.
+	 */
+	it( 'supports when() as an alias of stub()', function (
+		string $name,
+		array $layers,
+		Closure $call,
+		$expected
+	) {
+		foreach ( $layers as $layer ) {
+			$layer();
+		}
+
+		expect( $call() )->toBe( $expected );
+	} )->with( [
+		'when() returns a FunctionStub with the when API' => [
+			'bmd_when_alias',
+			[
+				function () {
+					$stub = Functions\when( 'bmd_when_alias' );
+
+					expect( $stub )->toBeInstanceOf( \Brain\Monkey\Expectation\FunctionStub::class );
+
+					$stub->justReturn( 'via-when' );
+				},
+			],
+			fn() => bmd_when_alias(),
+			'via-when',
+		],
+		'stub() can override when()' => [
+			'bmd_when_then_stub',
+			[
+				fn() => Functions\when( 'bmd_when_then_stub' )->justReturn( 'when' ),
+				fn() => Functions\stub( 'bmd_when_then_stub' )->justReturn( 'stub' ),
+			],
+			fn() => bmd_when_then_stub(),
+			'stub',
+		],
+		'when() can override stub()' => [
+			'bmd_stub_then_when',
+			[
+				fn() => Functions\stub( 'bmd_stub_then_when' )->justReturn( 'stub' ),
+				fn() => Functions\when( 'bmd_stub_then_when' )->justReturn( 'when' ),
+			],
+			fn() => bmd_stub_then_when(),
+			'when',
+		],
+	] );
+
+	/*
+	 * 1c. Brain Monkey's bulk WordPress function helpers are available here too.
+	 *
+	 * These aliases let test files use BrainMonkey\Functions for both defaults
+	 * and expectations, while Brain Monkey still owns the default behavior.
+	 */
+	it( 'aliases Brain Monkey bulk stub helpers and lets expect() take over later', function (
+		Closure $install,
+		Closure $baselineCall,
+		$baselineExpected,
+		string $name,
+		Closure $configureExpectation,
+		Closure $expectedCall
+	) {
+		$install();
+
+		expect( $baselineCall() )->toBe( $baselineExpected );
+
+		$configureExpectation( Functions\expect( $name ) );
+
+		$expectedCall();
+	} )->with( [
+		'escape functions' => [
+			fn() => Functions\stubEscapeFunctions(),
+			fn() => esc_html( '<b>Hi</b>' ),
+			'&lt;b&gt;Hi&lt;/b&gt;',
+			'esc_html',
+			fn( $e ) => $e->once()->with( '<b>Hi</b>' )->andReturn( 'mocked-escape' ),
+			function () {
+				expect( esc_html( '<b>Hi</b>' ) )->toBe( 'mocked-escape' );
+			},
+		],
+		'translation functions' => [
+			fn() => Functions\stubTranslationFunctions(),
+			fn() => __( 'Original', 'domain' ),
+			'Original',
+			'__',
+			fn( $e ) => $e->once()->with( 'Original', 'domain' )->andReturn( 'mocked-translation' ),
+			function () {
+				expect( __( 'Original', 'domain' ) )->toBe( 'mocked-translation' );
+			},
+		],
+	] );
+
+	/*
 	 * 2. stub() is re-callable; the last definition wins.
 	 *
 	 * Each row carries the (single) function name, an ordered list of layering

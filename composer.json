@@ -1,6 +1,6 @@
 {
 	"name": "pfaciana/brain-monkey-doubles",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Extends Brain Monkey with real WordPress hook execution and composable function stub/expect helpers for unit testing plugins and themes.",
 	"keywords": [],
 	"license": "MIT",

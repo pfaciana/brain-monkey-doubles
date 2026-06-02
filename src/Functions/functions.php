@@ -24,6 +24,34 @@ function stub( string $name )
 }
 
 /**
+ * Set (or override) a function's baseline behavior using Brain Monkey's name.
+ *
+ * Alias of stub(), kept re-callable while matching the native Brain Monkey API.
+ *
+ * @return \Brain\Monkey\Expectation\FunctionStub
+ */
+function when( string $name )
+{
+	return stub( $name );
+}
+
+/**
+ * Stub WordPress translation functions using Brain Monkey's defaults.
+ */
+function stubTranslationFunctions(): void
+{
+	Functions\stubTranslationFunctions();
+}
+
+/**
+ * Stub WordPress escape functions using Brain Monkey's defaults.
+ */
+function stubEscapeFunctions(): void
+{
+	Functions\stubEscapeFunctions();
+}
+
+/**
  * expect() that still fires when a when()/stub baseline already exists.
  *
  * Brain Monkey's own expect() refuses to re-route a function once a stub is
